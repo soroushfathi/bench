@@ -15,12 +15,11 @@ import sys
 from importlib import metadata
 from pathlib import Path
 
-from . import CompilerSettings, QiskitSettings, get_benchmark
-from .benchmark_generation import generate_filename
-from .devices import (
-    get_device_by_name,
-    get_native_gateset_by_name,
-)
+from mqt.bench.targets.devices import get_device_by_name
+from mqt.bench.targets.gatesets import get_target_for_gateset
+
+from . import CompilerSettings, QiskitSettings
+from .benchmark_generation import generate_filename, get_benchmark
 from .output import OutputFormat, save_circuit, write_circuit
 
 
@@ -72,14 +71,9 @@ def main() -> None:
         help="Qiskit compiler optimization level (0-3).",
     )
     parser.add_argument(
-        "--gateset",
+        "--target",
         type=str,
-        help="Used gateset (e.g., 'iqm', 'rigetti').",
-    )
-    parser.add_argument(
-        "--device",
-        type=str,
-        help="Device name for mapping stage (e.g., 'ibm_washington').",
+        help="Target name for native gates and mapped level (e.g., 'ibm_falcon' or 'ibm_washington').",
     )
     parser.add_argument(
         "--output-format",
@@ -110,6 +104,13 @@ def main() -> None:
     # Parse algorithm and optional instance
     benchmark_name, benchmark_instance = parse_benchmark_name_and_instance(args.algorithm)
 
+    if args.level == "nativegates":
+        target = get_target_for_gateset(args.target, num_qubits=args.num_qubits)
+    elif args.level == "mapped":
+        target = get_device_by_name(args.target)
+    else:
+        target = None
+
     # Generate circuit
     circuit = get_benchmark(
         benchmark_name=benchmark_name,
@@ -117,8 +118,7 @@ def main() -> None:
         level=args.level,
         circuit_size=args.num_qubits,
         compiler_settings=CompilerSettings(qiskit=qiskit_settings),
-        gateset=args.gateset or "ibm_falcon",
-        device_name=args.device or "ibm_washington",
+        target=target,
     )
 
     try:
@@ -129,7 +129,7 @@ def main() -> None:
 
     # For QASM outputs, serialize and print
     if fmt in (OutputFormat.QASM2, OutputFormat.QASM3) and not args.save:
-        write_circuit(circuit, sys.stdout, fmt)
+        write_circuit(circuit, sys.stdout, args.level, fmt, target)
         return
 
     # Otherwise, save to file
@@ -137,14 +137,15 @@ def main() -> None:
         benchmark_name=benchmark_name,
         level=args.level,
         num_qubits=args.num_qubits,
-        gateset=get_native_gateset_by_name(args.gateset) if args.gateset else None,
-        device=get_device_by_name(args.device) if args.device else None,
+        target=target,
         opt_level=args.qiskit_optimization_level,
     )
     success = save_circuit(
         qc=circuit,
         filename=filename,
+        level=args.level,
         output_format=fmt,
+        target=target,
         target_directory=args.target_directory,
     )
     if not success:

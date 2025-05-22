@@ -17,7 +17,9 @@ import pytest
 from pytest_console_scripts import ScriptRunner
 from qiskit.qasm3 import dumps
 
-from mqt.bench import CompilerSettings, QiskitSettings, get_benchmark
+from mqt.bench import CompilerSettings, QiskitSettings
+from mqt.bench.benchmark_generation import get_benchmark
+from mqt.bench.targets import get_device_by_name, get_target_for_gateset
 
 if TYPE_CHECKING:
     from pytest_console_scripts import ScriptResult, ScriptRunner
@@ -52,35 +54,20 @@ if TYPE_CHECKING:
              "--level", "nativegates",
              "--algorithm", "ghz",
              "--num-qubits", "20",
-             "--gateset", "ibm_falcon",
-         ], dumps(get_benchmark(level="nativegates", benchmark_name="ghz", circuit_size=20, gateset="ibm_falcon"))),
+             "--target", "ibm_falcon",
+         ], dumps(get_benchmark(level="nativegates", benchmark_name="ghz", circuit_size=20, target=get_target_for_gateset("ibm_falcon", 20)))),
         ([
              "--level", "mapped",
              "--algorithm", "ghz",
              "--num-qubits", "20",
              "--qiskit-optimization-level", "2",
-             "--gateset", "ibm_falcon",
-             "--device", "ibm_montreal",
+             "--target", "ibm_falcon_27",
          ], dumps(get_benchmark(
             level="mapped",
             benchmark_name="ghz",
             circuit_size=20,
             compiler_settings=CompilerSettings(QiskitSettings(optimization_level=2)),
-            gateset="ibm_falcon",
-            device_name="ibm_montreal",
-        ))),
-        ([
-             "--level", "mapped",
-             "--algorithm", "ghz",
-             "--num-qubits", "20",
-             "--qiskit-optimization-level", "2",
-             "--device", "ibm_montreal",
-         ], dumps(get_benchmark(
-            level="mapped",
-            benchmark_name="ghz",
-            circuit_size=20,
-            compiler_settings=CompilerSettings(QiskitSettings(optimization_level=2)),
-            device_name="ibm_montreal",
+            target=get_device_by_name("ibm_falcon_27"),
         ))),
         (["--help"], "usage: mqt.bench.cli"),
     ],
@@ -147,5 +134,49 @@ def test_cli_qpy_save(tmp_path: Path, script_runner: ScriptRunner) -> None:
 
     expected_path = Path(target_dir) / "ghz_alg_5.qpy"
     # CLI prints the path on a single line - ensure correctness
+    assert str(expected_path) in ret.stdout.strip().splitlines()[-1]
+    assert expected_path.is_file()
+
+
+def test_cli_nativegates_qasm2_save(tmp_path: Path, script_runner: ScriptRunner) -> None:
+    """QASM2 file should be saved for nativegates level when --save is specified."""
+    target_dir = str(tmp_path)
+    ret = script_runner.run(
+        [
+            "mqt.bench.cli",
+            "--level", "nativegates",
+            "--algorithm", "ghz",
+            "--num-qubits", "5",
+            "--target", "ibm_falcon",
+            "--qiskit-optimization-level", "1",
+            "--output-format", "qasm2",
+            "--save",
+            "--target-directory", target_dir,
+        ]
+    )
+    assert ret.success
+    expected_path = Path(target_dir) / "ghz_nativegates_ibm_falcon_opt1_5.qasm"
+    assert str(expected_path) in ret.stdout.strip().splitlines()[-1]
+    assert expected_path.is_file()
+
+
+def test_cli_mapped_qasm2_save(tmp_path: Path, script_runner: ScriptRunner) -> None:
+    """QASM2 file should be saved for mapped level when --save is specified."""
+    target_dir = str(tmp_path)
+    ret = script_runner.run(
+        [
+            "mqt.bench.cli",
+            "--level", "mapped",
+            "--algorithm", "ghz",
+            "--num-qubits", "5",
+            "--target", "ibm_falcon_27",
+            "--qiskit-optimization-level", "1",
+            "--output-format", "qasm2",
+            "--save",
+            "--target-directory", target_dir,
+        ]
+    )
+    assert ret.success
+    expected_path = Path(target_dir) / "ghz_mapped_ibm_falcon_27_opt1_5.qasm"
     assert str(expected_path) in ret.stdout.strip().splitlines()[-1]
     assert expected_path.is_file()

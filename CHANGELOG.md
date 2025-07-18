@@ -9,15 +9,10 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 ## [Unreleased]
 
-_If you are upgrading: please see [`UPGRADING.md`](UPGRADING.md#unreleased)._
-
-### Added
-
 ### Changed
 
-### Removed
-
-### Fixed
+- 🎨 Rename CLI from `mqt.bench.cli` to `mqt-bench` ([#625]) ([**@burgholzer**], [**@nquetschlich**])
+- 📝 Rewrite the usage documentation to include the CLI ([#625]) ([**@burgholzer**], [**@nquetschlich**])
 
 ## [2.0.0] - 2025-06-24
 
@@ -97,6 +92,7 @@ _📚 Refer to the [GitHub Release Notes] for previous changelogs._
 [#585]: https://github.com/munich-quantum-toolkit/bench/pull/585
 [#586]: https://github.com/munich-quantum-toolkit/bench/pull/586
 [#603]: https://github.com/munich-quantum-toolkit/bench/pull/603
+[#625]: https://github.com/munich-quantum-toolkit/bench/pull/625
 
 <!-- Contributor -->
 

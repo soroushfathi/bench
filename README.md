@@ -92,7 +92,7 @@ from mqt.bench import BenchmarkLevel, get_benchmark
 
 # Get a benchmark circuit on algorithmic level representing the GHZ state with 5 qubits
 qc_algorithmic_level = get_benchmark(
-    benchmark_name="ghz", level=BenchmarkLevel.ALG, circuit_size=5
+    benchmark="ghz", level=BenchmarkLevel.ALG, circuit_size=5
 )
 
 # Draw the circuit

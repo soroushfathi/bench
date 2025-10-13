@@ -75,7 +75,7 @@ def _get_circuit(
     return qc
 
 
-def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False) -> QuantumCircuit:
+def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False, basis_gates: list[str] | None = None) -> QuantumCircuit:
     """Generates the mirror version (qc @ qc.inverse()) of a given quantum circuit.
 
     For circuits with an initial layout (e.g., mapped circuits), this function ensures
@@ -83,13 +83,15 @@ def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False) -
     original circuit. While Qiskit's `inverse()` and `compose()` methods correctly track
     the permutation of qubits, this benchmark requires that the final qubit permutation
     is identical to the initial one, necessitating the explicit layout handling herein.
+    Also ensures that the mirrored circuit respect the native gate set of the target device
+    if a list of basis_gates is provided.
 
     All qubits are measured at the end of the mirror circuit.
 
     Args:
         qc_original: The quantum circuit to mirror.
         inplace: If True, modifies the circuit in place. Otherwise, returns a new circuit.
-
+        basis_gates: List of native gates of the target device.
     Returns:
         The mirrored quantum circuit.
     """
@@ -106,6 +108,10 @@ def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False) -
 
     # Form the mirror circuit by composing the original circuit with its inverse.
     target_qc.compose(qc_inv, inplace=True)
+
+    # Transpile to ensure the final circuit uses only native gates
+    if basis_gates is not None:
+        target_qc = transpile(target_qc, basis_gates=basis_gates, optimization_level=0)
 
     # Add final measurements to all active qubits
     target_qc.barrier(active_qubits)

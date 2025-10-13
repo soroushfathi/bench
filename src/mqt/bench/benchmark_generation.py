@@ -75,7 +75,7 @@ def _get_circuit(
     return qc
 
 
-def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False, basis_gates: list[str] | None = None) -> QuantumCircuit:
+def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False, target: Target | None = None, optimization_level: int = 0) -> QuantumCircuit:
     """Generates the mirror version (qc @ qc.inverse()) of a given quantum circuit.
 
     For circuits with an initial layout (e.g., mapped circuits), this function ensures
@@ -110,8 +110,8 @@ def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False, b
     target_qc.compose(qc_inv, inplace=True)
 
     # Transpile to ensure the final circuit uses only native gates
-    if basis_gates is not None:
-        target_qc = transpile(target_qc, basis_gates=basis_gates, optimization_level=0)
+    if target is not None:
+        target_qc = transpile(target_qc, target=target, optimization_level=optimization_level, routing_method=None)
 
     # Add final measurements to all active qubits
     target_qc.barrier(active_qubits)

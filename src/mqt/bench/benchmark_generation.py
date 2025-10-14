@@ -93,7 +93,7 @@ def _create_mirror_circuit(
     Args:
         qc_original: The quantum circuit to mirror.
         inplace: If True, modifies the circuit in place. Otherwise, returns a new circuit.
-        basis_gates: List of native gates of the target device.
+        target: List of native gates of the target device.
         optimization_level: Optimization level of the device.
 
     Returns:

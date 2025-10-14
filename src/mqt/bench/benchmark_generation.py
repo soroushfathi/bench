@@ -115,7 +115,7 @@ def _create_mirror_circuit(
 
     # Transpile to ensure the final circuit uses only native gates
     if target is not None:
-        target_qc = transpile(target_qc, target=target, optimization_level=optimization_level, routing_method=None)
+        target_qc = transpile(target_qc, target=target, optimization_level=optimization_level, routing_method=None, seed_transpiler=10)
 
     # Add final measurements to all active qubits
     target_qc.barrier(active_qubits)

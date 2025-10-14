@@ -85,8 +85,8 @@ def _create_mirror_circuit(
     original circuit. While Qiskit's `inverse()` and `compose()` methods correctly track
     the permutation of qubits, this benchmark requires that the final qubit permutation
     is identical to the initial one, necessitating the explicit layout handling herein.
-    Also ensures that the mirrored circuit respect the native gate set of the target device
-    if a list of target is provided.
+    Also ensures that the mirrored circuit respects the native gate set of the target device
+    if a target is provided.
 
     All qubits are measured at the end of the mirror circuit.
 

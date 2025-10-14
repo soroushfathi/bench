@@ -38,9 +38,9 @@ if TYPE_CHECKING:  # pragma: no cover
     import types
     from collections.abc import Callable
 
+import mqt.bench.benchmark_generation as bench_gen
 from mqt.bench.benchmark_generation import (
     BenchmarkLevel,
-    _create_mirror_circuit,
     get_benchmark,
     get_benchmark_alg,
     get_benchmark_indep,
@@ -105,7 +105,7 @@ def test_create_mirror_circuit_with_target() -> None:
     target.add_instruction(CXGate(), {(0, 1): None, (0, 2): None})
     target.add_instruction(CZGate(), {(1, 2): None})
 
-    mirror_qc = _create_mirror_circuit(qc, target=target, optimization_level=0)
+    mirror_qc = bench_gen._create_mirror_circuit(qc, target=target, optimization_level=0)
 
     for instr in mirror_qc.data:
         name = instr.operation.name

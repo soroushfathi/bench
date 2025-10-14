@@ -75,7 +75,9 @@ def _get_circuit(
     return qc
 
 
-def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False, target: Target | None = None, optimization_level: int = 0) -> QuantumCircuit:
+def _create_mirror_circuit(
+    qc_original: QuantumCircuit, inplace: bool = False, target: Target | None = None, optimization_level: int = 0
+) -> QuantumCircuit:
     """Generates the mirror version (qc @ qc.inverse()) of a given quantum circuit.
 
     For circuits with an initial layout (e.g., mapped circuits), this function ensures
@@ -92,6 +94,7 @@ def _create_mirror_circuit(qc_original: QuantumCircuit, inplace: bool = False, t
         qc_original: The quantum circuit to mirror.
         inplace: If True, modifies the circuit in place. Otherwise, returns a new circuit.
         basis_gates: List of native gates of the target device.
+
     Returns:
         The mirrored quantum circuit.
     """

@@ -86,14 +86,14 @@ def _create_mirror_circuit(
     the permutation of qubits, this benchmark requires that the final qubit permutation
     is identical to the initial one, necessitating the explicit layout handling herein.
     Also ensures that the mirrored circuit respect the native gate set of the target device
-    if a list of basis_gates is provided.
+    if a list of target is provided.
 
     All qubits are measured at the end of the mirror circuit.
 
     Args:
         qc_original: The quantum circuit to mirror.
         inplace: If True, modifies the circuit in place. Otherwise, returns a new circuit.
-        target: List of native gates of the target device.
+        target: Target device for transpilation. If provided, ensures native gate set compliance.
         optimization_level: Optimization level of the device.
 
     Returns:
@@ -318,7 +318,7 @@ def get_benchmark_native_gates(
 
     compiled_circuit = pm.run(circuit)
     if generate_mirror_circuit:
-        return _create_mirror_circuit(compiled_circuit, inplace=True)
+        return _create_mirror_circuit(compiled_circuit, inplace=True, target=target, optimization_level=opt_level)
     return compiled_circuit
 
 
@@ -384,7 +384,7 @@ def get_benchmark_mapped(
         seed_transpiler=10,
     )
     if generate_mirror_circuit:
-        return _create_mirror_circuit(mapped_circuit, inplace=True)
+        return _create_mirror_circuit(mapped_circuit, inplace=True, target=target, optimization_level=opt_level)
     return mapped_circuit
 
 

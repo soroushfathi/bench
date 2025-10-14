@@ -76,7 +76,7 @@ def _get_circuit(
 
 
 def _create_mirror_circuit(
-    qc_original: QuantumCircuit, inplace: bool = False, target: Target | None = None, optimization_level: int = 0
+    qc_original: QuantumCircuit, inplace: bool = False, target: Target | None = None, optimization_level: int = 2
 ) -> QuantumCircuit:
     """Generates the mirror version (qc @ qc.inverse()) of a given quantum circuit.
 

@@ -20,7 +20,7 @@ from importlib import metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, NoReturn, cast
 
-import numpy
+import numpy as np
 import pytest
 from qiskit import QuantumCircuit, qpy
 from qiskit.circuit import Parameter

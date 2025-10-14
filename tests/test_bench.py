@@ -40,12 +40,12 @@ if TYPE_CHECKING:  # pragma: no cover
 
 from mqt.bench.benchmark_generation import (
     BenchmarkLevel,
+    _create_mirror_circuit,
     get_benchmark,
     get_benchmark_alg,
     get_benchmark_indep,
     get_benchmark_mapped,
     get_benchmark_native_gates,
-    _create_mirror_circuit,
 )
 from mqt.bench.benchmarks import (
     create_circuit,

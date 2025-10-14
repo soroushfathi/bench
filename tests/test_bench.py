@@ -20,11 +20,10 @@ from importlib import metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, NoReturn, cast
 
-import numpy
 import pytest
 from qiskit import QuantumCircuit, qpy
 from qiskit.circuit import Parameter
-from qiskit.circuit.library import CXGate, HGate, RXGate, RZGate, XGate, CZGate
+from qiskit.circuit.library import CXGate, CZGate, HGate, RXGate, RZGate, XGate
 from qiskit.compiler import transpile
 from qiskit.transpiler import (
     InstructionProperties,
@@ -82,7 +81,8 @@ SPECIAL_QUBIT_COUNTS: dict[str, int] = {
     "vbe_ripple_carry_adder": 4,
 }
 
-def test_create_mirror_circuit_with_target():
+
+def test_create_mirror_circuit_with_target() -> None:
     """Test that _create_mirror_circuit respects Target and acts as identity."""
     qc = QuantumCircuit(3)
 
@@ -98,12 +98,13 @@ def test_create_mirror_circuit_with_target():
 
     target = Target()
     target.add_instruction(HGate(), {(0,): None, (1,): None, (2,): None})
-    target.add_instruction(RXGate(np.pi/4), {(1,): None})
-    target.add_instruction(RZGate(np.pi/3), {(2,): None})
+    target.add_instruction(RXGate(np.pi / 4), {(1,): None})
+    target.add_instruction(RZGate(np.pi / 3), {(2,): None})
     target.add_instruction(CXGate(), {(0, 1): None, (0, 2): None})
     target.add_instruction(CZGate(), {(1, 2): None})
 
     from mqt.bench.benchmark_generation import _create_mirror_circuit
+
     mirror_qc = _create_mirror_circuit(qc, target=target, optimization_level=0)
 
     for instr in mirror_qc.data:

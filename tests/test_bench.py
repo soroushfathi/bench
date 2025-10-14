@@ -45,6 +45,7 @@ from mqt.bench.benchmark_generation import (
     get_benchmark_indep,
     get_benchmark_mapped,
     get_benchmark_native_gates,
+    _create_mirror_circuit,
 )
 from mqt.bench.benchmarks import (
     create_circuit,
@@ -103,8 +104,6 @@ def test_create_mirror_circuit_with_target() -> None:
     target.add_instruction(RZGate(np.pi / 3), {(2,): None})
     target.add_instruction(CXGate(), {(0, 1): None, (0, 2): None})
     target.add_instruction(CZGate(), {(1, 2): None})
-
-    from mqt.bench.benchmark_generation import _create_mirror_circuit
 
     mirror_qc = _create_mirror_circuit(qc, target=target, optimization_level=0)
 

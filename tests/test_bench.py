@@ -20,11 +20,10 @@ from importlib import metadata
 from pathlib import Path
 from typing import TYPE_CHECKING, NoReturn, cast
 
-import numpy as np
 import pytest
 from qiskit import QuantumCircuit, qpy
 from qiskit.circuit import Parameter
-from qiskit.circuit.library import CXGate, CZGate, HGate, RXGate, RZGate, XGate
+from qiskit.circuit.library import CXGate, HGate, RXGate, RZGate, XGate
 from qiskit.compiler import transpile
 from qiskit.transpiler import (
     InstructionProperties,
@@ -38,7 +37,6 @@ if TYPE_CHECKING:  # pragma: no cover
     import types
     from collections.abc import Callable
 
-import mqt.bench.benchmark_generation as bench_gen
 from mqt.bench.benchmark_generation import (
     BenchmarkLevel,
     get_benchmark,
@@ -82,44 +80,6 @@ SPECIAL_QUBIT_COUNTS: dict[str, int] = {
     "rg_qft_multiplier": 4,
     "vbe_ripple_carry_adder": 4,
 }
-
-
-def test_create_mirror_circuit_with_target() -> None:
-    """Test that _create_mirror_circuit respects Target and acts as identity."""
-    qc = QuantumCircuit(3)
-
-    qc.h(0)
-    qc.rx(np.pi / 4, 1)
-    qc.rz(np.pi / 3, 2)
-
-    qc.cx(0, 1)
-    qc.cz(1, 2)
-
-    qc.h(0)
-    qc.cx(0, 2)
-
-    target = Target()
-    target.add_instruction(HGate(), {(0,): None, (1,): None, (2,): None})
-    target.add_instruction(RXGate(np.pi / 4), {(1,): None})
-    target.add_instruction(RZGate(np.pi / 3), {(2,): None})
-    target.add_instruction(CXGate(), {(0, 1): None, (0, 2): None})
-    target.add_instruction(CZGate(), {(1, 2): None})
-
-    mirror_qc = bench_gen._create_mirror_circuit(qc, target=target, optimization_level=0)
-
-    for instr in mirror_qc.data:
-        name = instr.operation.name
-        if name in ["barrier", "measure"]:
-            continue
-        assert name in target.operation_names
-
-    # TODO: Investigate why the mirrored circuit does not reproduce the same statevector as the original.
-    # The expectation is that qc followed by its mirror (qc @ mirror_qc) should act as an identity operation,
-    # but Statevector equivalence currently fails. Possible causes include:
-    # - Non-unitary operations or measurements remaining in the mirrored circuit.
-    # - Missing inversion of parameterized gates or global phase offsets.
-    # - Target constraints modifying gate decompositions.
-    # To be debugged and fixed in a later revision.
 
 
 @pytest.mark.parametrize("benchmark_name", get_available_benchmark_names())

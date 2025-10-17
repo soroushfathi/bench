@@ -938,13 +938,9 @@ def test_get_benchmark_mirror_option() -> None:
         assert qc_mirror.num_qubits == qc_base.num_qubits
 
         # Ensure the mirror circuit contains only native gates for the given target.
-        # We allow 'barrier' and 'measure' as they are intentionally present in the mirror.
-        if target_obj is not None:
-            for inst in qc_mirror.data:
-                op_name = inst.operation.name
-                assert op_name in target_obj.operation_names or op_name in ("barrier", "measure"), (
-                    f"Operation '{op_name}' in mirror circuit is not native to target for level '{level_enum.name}'."
-                )
+        pm = PassManager(GatesInBasis(target=target_obj))
+        pm.run(qc_mirror)
+        assert pm.property_set["all_gates_in_basis"]
 
         # at least each logical qubit should be measured
         assert sum(inst.operation.name == "measure" for inst in qc_mirror.data) >= logical_circuit_size

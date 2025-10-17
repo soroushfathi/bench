@@ -13,6 +13,11 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - 👷 Enable testing on Python 3.14 ([#705]) ([**@denialhaag**])
 
+### Changed
+
+- 🐛 Fix layout preservation and ensure native gate compliance for mirror circuit generation ([#708]) ([**@soroushfathi**])
+
+
 ### Removed
 
 - 🔥 Drop support for Python 3.9 ([#671]) ([**@denialhaag**])

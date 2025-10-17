@@ -942,11 +942,8 @@ def test_get_benchmark_mirror_option() -> None:
         if target_obj is not None:
             for inst in qc_mirror.data:
                 op_name = inst.operation.name
-                assert (
-                    op_name in target_obj.operation_names or op_name in ("barrier", "measure")
-                ), (
-                    f"Operation '{op_name}' in mirror circuit is not native to target "
-                    f"for level '{level_enum.name}'."
+                assert op_name in target_obj.operation_names or op_name in ("barrier", "measure"), (
+                    f"Operation '{op_name}' in mirror circuit is not native to target for level '{level_enum.name}'."
                 )
 
         # at least each logical qubit should be measured

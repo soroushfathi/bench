@@ -18,7 +18,7 @@ from qiskit import generate_preset_pass_manager
 from qiskit.circuit import ClassicalRegister, QuantumCircuit, SessionEquivalenceLibrary
 from qiskit.compiler import transpile
 from qiskit.converters import circuit_to_dag
-from qiskit.transpiler import Layout, Target
+from qiskit.transpiler import Layout, Target, TranspileLayout
 from typing_extensions import assert_never
 
 from .benchmarks import create_circuit
@@ -116,7 +116,12 @@ def _create_mirror_circuit(
     # Transpile to ensure the final circuit uses only native gates
     if target is not None:
         target_qc = transpile(
-            target_qc, target=target, optimization_level=optimization_level, routing_method=None, seed_transpiler=10
+            target_qc,
+            target=target,
+            optimization_level=optimization_level,
+            routing_method=None,
+            seed_transpiler=10,
+            layout_method="trivial"
         )
 
     # Add final measurements to all active qubits

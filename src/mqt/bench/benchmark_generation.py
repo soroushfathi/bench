@@ -113,16 +113,19 @@ def _create_mirror_circuit(
     # Form the mirror circuit by composing the original circuit with its inverse.
     target_qc.compose(qc_inv, inplace=True)
 
-    # Transpile to ensure the final circuit uses only native gates
+    # Transpile to ensure the final circuit uses only native gates while preserving the initial layout.
     if target is not None:
+        layout = target_qc.layout.initial_layout if target_qc.layout is not None else None
         target_qc = transpile(
             target_qc,
             target=target,
             optimization_level=optimization_level,
+            layout_method=None,
             routing_method=None,
             seed_transpiler=10,
-            layout_method="trivial",
         )
+        if layout is not None:
+            target_qc.layout.initial_layout = layout
 
     # Add final measurements to all active qubits
     target_qc.barrier(active_qubits)

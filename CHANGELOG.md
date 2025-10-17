@@ -13,9 +13,9 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 
 - 👷 Enable testing on Python 3.14 ([#705]) ([**@denialhaag**])
 
-### Changed
+### Fixed
 
-- 🐛 Fix layout preservation and ensure native gate compliance for mirror circuit generation ([#708]) ([**@soroushfathi**])
+- 🐛 Fix layout preservation and ensure native gate compliance for mirror circuit generation ([#709]) ([**@soroushfathi**], [**@burgholzer**])
 
 ### Removed
 
@@ -80,6 +80,7 @@ _📚 Refer to the [GitHub Release Notes] for previous changelogs._
 
 <!-- PR links -->
 
+[#709]: https://github.com/munich-quantum-toolkit/bench/pull/709
 [#705]: https://github.com/munich-quantum-toolkit/bench/pull/705
 [#671]: https://github.com/munich-quantum-toolkit/bench/pull/671
 [#666]: https://github.com/munich-quantum-toolkit/bench/pull/666
@@ -120,6 +121,7 @@ _📚 Refer to the [GitHub Release Notes] for previous changelogs._
 [**@fkiwit**]: https://github.com/fkiwit
 [**@CreativeBinBag**]: https://github.com/CreativeBinBag
 [**@denialhaag**]: https://github.com/denialhaag
+[**@soroushfathi**]: https://github.com/soroushfathi
 
 <!-- General links -->
 
